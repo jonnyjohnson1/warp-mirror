@@ -30,10 +30,34 @@ class WarpcastAPI:
             response.raise_for_status()
             
             json_data = response.json()
-            self.data = json_data.get("casts", [])
-            print(f"Fetched {len(self.data)} casts.")
+            print(json_data)
+            # self.data = json_data.get("casts", [])
+            # print(f"Fetched {len(self.data)} casts.")
         except requests.exceptions.RequestException as e:
             print(f"Error fetching data: {e}")
+    
+    def fetch_all_channels(self, limit: int = 100) -> Dict[str, Any]:
+        """
+        Fetches all channels from the API using the endpoint:
+        GET {self.url}?allChannels=true&limit={limit}
+        
+        Parameters:
+            limit (int): Number of channels to retrieve (Default: 100, Max: 100)
+        
+        Returns:
+            dict: JSON response containing channels, count, and timestamp.
+        """
+        endpoint = f"{self.url}?allChannels=true&limit={limit}"
+        try:
+            response = requests.get(endpoint)
+            response.raise_for_status()
+            json_data = response.json()
+            print("Fetched channels data:")
+            print(json_data)
+            return json_data
+        except requests.exceptions.RequestException as e:
+            print(f"Error fetching channels: {e}")
+            return {}
     
     def parse_casts(self) -> List[Dict[str, Any]]:
         """Parses relevant fields from each cast."""
